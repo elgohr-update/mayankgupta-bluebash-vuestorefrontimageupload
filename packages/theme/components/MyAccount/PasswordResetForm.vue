@@ -42,6 +42,13 @@
           />
         </ValidationProvider>
       </div>
+      <SfInput
+        type="file"
+        data-cy="password-reset-input_newPasswordConfirmation"
+        name="newPasswordConfirmation"
+        label="image"
+        @change="(e) => onFileSelected(e)"
+      />
       <SfButton class="form__button">
         {{ "Change password" }}
       </SfButton>
@@ -73,8 +80,9 @@ export default {
     type: Object,
     default: () => ({
       newPassword: '',
-      newPasswordConfirmation: ''
-    })
+      newPasswordConfirmation: '',
+      image: '',
+    }),
   },
   created() {
     extend('required', {
@@ -94,18 +102,29 @@ export default {
     const { changePassword} = useUser();
     const form = reactive({
       newPassword: password.newPassword,
-      newPasswordConfirmation: password.newPasswordConfirmation
+      newPasswordConfirmation: password.newPasswordConfirmation,
+      image:password.image
     });
 
     const submitForm = () => {
-      changePassword({current: '', new: form.newPassword });
+      changePassword({ current: '', new: form.image });
+    };
+
+    const onFileSelected = (event, id) => {
+      let reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.onload = () => {
+        console.log(reader.result);
+        form.image = reader.result
+      };
     };
 
     return {
       form,
-      submitForm
+      submitForm,
+      onFileSelected
     };
-  }
+  },
 };
 </script>
 
